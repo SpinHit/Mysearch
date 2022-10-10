@@ -1,5 +1,7 @@
 <!-- script pour afficher les icones -->
 <script src="https://kit.fontawesome.com/45e38e596f.js" crossorigin="anonymous"></script>
+<meta http-equiv="content-type" content="text/html" charset="utf-8" />
+
 <?php
 //require('connexion.php');
 
@@ -52,6 +54,20 @@ if (isset($_GET['recherche'])){
      $recherche = $_GET['recherche'];
      recherche($recherche,$pdo);
 }
+// on transforme le tableau en chaîne de caractère et on filtre les mots avec la fonction filtre
+// on regle l'encodage pour les accents en utf8
+
+
+/* $chaine = implode(" ",openhtml('https://www.lesnumeriques.com/'));
+//echo $chaine;
+  $chaine = filtre($chaine); 
+// on affiche la liste des mots
+ foreach($chaine as $key => $value){
+     echo $value.'<br>';
+}   */
+
+ 
+
 
 
 

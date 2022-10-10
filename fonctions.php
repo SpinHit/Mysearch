@@ -1,32 +1,11 @@
 <?php
 
 require('connexion.php');
-
-/* // fonction pour téléversser l'image
- function insereBddDossier($pdo,$pname,$psize,$dest){
-    $sql = "INSERT into images (file_name, size , chemin) VALUES ('$pname','$psize','$dest')";
-    
-     // dossier ou l'on va insserer les images 
-    
      
-    if ($_FILES['mon_fichier']['error'] > 0) $erreur = "Erreur lors du transfert";
-     // upload de l'image dans le dossier 
-    $resultat = move_uploaded_file($_FILES['mon_fichier']['tmp_name'],$dest.$_FILES['mon_fichier']['name']);
-    
-    if ($resultat) $pdo->query($sql) ; echo "Transfert réussi"; header("Refresh:0");
-    } */
-
-    // fonction permettant de récupérer l'extention d'un fichier
-    // liste des mots vide
-       
 
     function recupExtention($fname) {
         return substr(strrchr($fname,'.'),1);
         }
-
-
-
-
 
             function count_values($array) {
                 $result = array();
@@ -43,8 +22,10 @@ require('connexion.php');
 
             function Filtre($contenu){
                 $ListeMot_vides = ["de","mais","un","il","à","le","et","la","les","des","en","du","une","est","ce","qui","par","sur","pas","plus","se","aux","pour","dans","ce","ne","vous","que","avec","son","sa","leur","soit","comme","tout","cette","cet","ces","ses","ceux","celui","celle","elles","ils","on","ont","nous","vous","y","a","d","l","m","n","s","t","j","c","ç","b","p","f","v","h","k","q","g","x","z","w","r","é","è","ê","à","â","î","ô","û","ù","ç","ë","ï","ü","ÿ","œ","æ","-","_",".",",",";","!","?","(",")","[","]","{","}","/","\\","|","&","*","^","%","$","£","€","@","~","#","0","1","2","3","4","5","6","7","8","9","=","+","<",">","'","\"","`","¨","°","§","µ","¤","¶","•","‹","›","«","»","€","™","®","©","¢","¥","–","—","…","‡","°","·","‚","‘","’","“","”","„","†","‡","•","…","‰","‹","›","€","™","®","©","¢","¥","–","—","…","‡","°","·","‚","‘","’","“","”","„","†","‡","•","…","‰","‹","›","€","™","®","©","¢","¥","–","—","…","‡","°","·","‚","‘","’","“","”","„","†","‡","•","…","‰","‹","›","€","™","®","©","¢","¥","–","—","…","‡","°","·","‚","‘","’","“","”","„","†","‡","•","…","‰","‹","›","€","™","®","©","lui"];
-                $contenu = strtolower($contenu);
-
+                $contenu = str_replace(" / "," ",$contenu);
+                $contenu = mb_strtolower($contenu,"UTF-8");
+                
+                
                 // on filtre les phrases du fichier
                 $contenu = preg_replace('/[^a-zA-Z0-9àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ ]/', ' ', $contenu);
                 // on met le contenu dans un tableau
@@ -54,21 +35,12 @@ require('connexion.php');
                     if (strlen($value) < 3 || in_array($value, $ListeMot_vides)) {
                         unset($contenu[$key]);
                     }
-                
-                
-                /*     // on compte les redondances de chaque mot dans le tableau $contenu et on les met dans un tableau $mots 
-                    $mots[$value] = (isset($mots[$value])) ? $mots[$value] + 1 : 1; */
+
                 }
                 return $contenu;
-                
-                /*     // on insere les mots dans la bdd
-                    $sql = "INSERT into mots (mot, nb) VALUES ('$key','$value')";
-                    $pdo->query($sql) ; */
-                
-                
+                      
                 }
 
-            // on met dans une fonction 
             function indexeetaffiche($pname,$contenuClean,$pdo){
                 
                 //on va afficher le resultat de la fonction count_values et les ajouter dans la bdd
@@ -83,13 +55,15 @@ require('connexion.php');
 
             // on retourne les mots les plus redondants d'un nom de fichier donné
             function motredondant($nom_fichier,$pdo){
-                // on récupère le mot dans la bdd par rapport à la recherche par ordre de redondance le plus grand au plus petit
                 $redondance1=0;
                 $taille = 10;
                 $chaine='';
+                // on récupère le mot dans la bdd par rapport à la recherche par ordre de redondance le plus grand au plus petit
                 $sql = "SELECT * FROM tablemots WHERE nom_du_fichier = '$nom_fichier' ORDER BY redondance DESC";
                 $result = $pdo->query($sql);
                 $result = $result->fetchAll();
+                // on mélange le tableau
+                shuffle($result);
                 // on affiche le mot le plus redondant et on fait grandir la taille de la police en fonction de la redondance
                 foreach($result as $key => $value){
                     if($value['redondance'] > 2){
@@ -97,16 +71,29 @@ require('connexion.php');
                     }
                     // on affiche les 40 premiers mots a la redondance 1
                     if($value['redondance'] == 1 && $redondance1 < 40){
-                        $chaine = $chaine.'<span style="font-size:'.$taille*$value['redondance'].'px">'.$value['mot'].'</span>'.' ';
-                        $redondance1++;
-                        
+                        $chaine = $chaine.'<span style="font-size:'.'15'.'px">'.$value['mot'].'</span>'.' ';
+                        $redondance1++;   
                     }
                     
                 }
-
-
                 return $chaine;
 
+            }
+            // on ouvre un lien html et on scrape le site pour récupérer le texte
+            function openhtml($url){
+                $html = file_get_contents($url);
+                $tags = explode('<',$html);
+                foreach ($tags as $tag)
+                {
+                // on skip les balises scripts
+                if (strpos($tag,'script') !== FALSE) continue;
+                // get text
+                $text = strip_tags('<'.$tag);
+                // only if text present remember
+                if (trim($text) != '') $texts[] = $text;
+                }
+
+                return $texts;
             }
 
 
@@ -160,7 +147,7 @@ require('connexion.php');
                 
                 <?php
 
-            }
+            } 
 
 
 
