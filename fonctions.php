@@ -68,7 +68,7 @@ require('connexion.php');
                 
                 }
 
-                            // on met dans une fonction 
+            // on met dans une fonction 
             function indexeetaffiche($pname,$contenuClean,$pdo){
                 
                 //on va afficher le resultat de la fonction count_values et les ajouter dans la bdd
@@ -84,12 +84,32 @@ require('connexion.php');
             // on retourne les mots les plus redondants d'un nom de fichier donné
             function motredondant($nom_fichier,$pdo){
                 // on récupère le mot dans la bdd par rapport à la recherche par ordre de redondance le plus grand au plus petit
+                $redondance1=0;
+                $taille = 10;
+                $chaine='';
                 $sql = "SELECT * FROM tablemots WHERE nom_du_fichier = '$nom_fichier' ORDER BY redondance DESC";
                 $result = $pdo->query($sql);
                 $result = $result->fetchAll();
+                // on affiche le mot le plus redondant et on fait grandir la taille de la police en fonction de la redondance
+                foreach($result as $key => $value){
+                    if($value['redondance'] > 2){
+                        $chaine = $chaine.'<span style="font-size:'.$taille*$value['redondance'].'px">'.$value['mot'].'</span>'.' ';
+                    }
+                    // on affiche les 40 premiers mots a la redondance 1
+                    if($value['redondance'] == 1 && $redondance1 < 40){
+                        $chaine = $chaine.'<span style="font-size:'.$taille*$value['redondance'].'px">'.$value['mot'].'</span>'.' ';
+                        $redondance1++;
+                        
+                    }
+                    
+                }
 
-                return "[".$result[0]['redondance']."]".$result[0]['mot']." "."[".$result[1]['redondance']."]".$result[1]['mot']." "."[".$result[2]['redondance']."]".$result[2]['mot']." "."[".$result[3]['redondance']."]".$result[3]['mot']." "."[".$result[4]['redondance']."]".$result[4]['mot'];
+
+                return $chaine;
+
             }
+
+
 
             // fonction permettant de chercher un mot dans la bdd et de l'afficher avec le nombre de redondance et le nom du fichier
             function recherche($mot,$pdo){
