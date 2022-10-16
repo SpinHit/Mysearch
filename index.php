@@ -11,23 +11,13 @@ require('scan.php');
 
 //$pdo = new PDO($dsn, $dbusername, $dbpassword);
 
-
 // compter les redondances de chaque mot et les mettre dans un tableau avec le nombre de redondances et le mot sans doublons
 
 // on lance la fonction en cliquant sur le bouton bouttonscan et on affiche le resultat
 
-
-
-
- 
-
 ?>
 
-
-
-
 <!-- Partie HTML-->
-
 
 <center>
 <h1>Moteur de recherche</h1>
@@ -35,7 +25,6 @@ require('scan.php');
      <!--  Barre de recherche -->
      <form class='wrap' method="get" action="index.php">
           <div class="search">
-
      <input type="text" class="searchTerm" name="recherche" placeholder="Que cherchez vous ?">
      <input class="searchButton" type="submit" name="submit" value="Rechercher">
      </div>

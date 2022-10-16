@@ -90,42 +90,6 @@ footer {
 
 }
 
-table {
-    width: 100%;
-    table-layout: fixed;
-}
-
-.tbl-header {
-    background-color: #00B4CC;
-    border-radius: 30px 30px 0 0;
-}
-
-.tbl-content {
-    height: 300px;
-    margin-top: 0px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-th {
-    padding: 20px 15px;
-    text-align: left;
-    font-weight: 500;
-    font-size: 12px;
-    color: #fff;
-    text-transform: uppercase;
-}
-
-td {
-    padding: 15px;
-    text-align: left;
-    vertical-align: middle;
-    font-weight: 300;
-    font-size: 12px;
-    color: black;
-    border-bottom: solid 1px rgba(255, 255, 255, 0.1);
-}
-
-
 /* demo styles */
 
 section {
@@ -169,17 +133,21 @@ section {
 
 /* for custom scrollbar for webkit browser*/
 /* Container is necessary because td cannot be positioned relative */
-td .tooltipcontainer {
+.tooltipcontainer {
     position: relative;
 }
 
-td .tooltip {
+.tooltip {
     display: none;
     position: absolute;
     left: 200px;
+    background: #00b4cc;
+    color: white;
+    border-radius: 20px;
+    z-index: 1;
     /* More positioning, heigh, width, etc */
 }
 
-td a:hover .tooltip {
+a:hover .tooltip {
     display: block;
 }

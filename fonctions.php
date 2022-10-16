@@ -21,7 +21,19 @@ require('connexion.php');
             }
 
             function Filtre($contenu){
-                $ListeMot_vides = ["de","mais","un","il","à","le","et","la","les","des","en","du","une","est","ce","qui","par","sur","pas","plus","se","aux","pour","dans","ce","ne","vous","que","avec","son","sa","leur","soit","comme","tout","cette","cet","ces","ses","ceux","celui","celle","elles","ils","on","ont","nous","vous","y","a","d","l","m","n","s","t","j","c","ç","b","p","f","v","h","k","q","g","x","z","w","r","é","è","ê","à","â","î","ô","û","ù","ç","ë","ï","ü","ÿ","œ","æ","-","_",".",",",";","!","?","(",")","[","]","{","}","/","\\","|","&","*","^","%","$","£","€","@","~","#","0","1","2","3","4","5","6","7","8","9","=","+","<",">","'","\"","`","¨","°","§","µ","¤","¶","•","‹","›","«","»","€","™","®","©","¢","¥","–","—","…","‡","°","·","‚","‘","’","“","”","„","†","‡","•","…","‰","‹","›","€","™","®","©","¢","¥","–","—","…","‡","°","·","‚","‘","’","“","”","„","†","‡","•","…","‰","‹","›","€","™","®","©","¢","¥","–","—","…","‡","°","·","‚","‘","’","“","”","„","†","‡","•","…","‰","‹","›","€","™","®","©","¢","¥","–","—","…","‡","°","·","‚","‘","’","“","”","„","†","‡","•","…","‰","‹","›","€","™","®","©","lui"];
+                $motvide = [];
+
+                // on ouvre motvide.txt et on met chaque mot dans $list
+                $file = fopen('motvide.txt', 'r');
+                while(!feof($file)){
+                    $mot = fgets($file);
+                    $mot = trim($mot);
+                    $motvide[] = $mot;
+                }
+                fclose($file);
+
+                
+
                 $contenu = str_replace(" / "," ",$contenu);
                 $contenu = mb_strtolower($contenu,"UTF-8");
                 
@@ -32,7 +44,7 @@ require('connexion.php');
                 $contenu = explode(" ", $contenu);
                 // on enleve les mots de moins de 3 charactères et on compte les redondances et que le mot n'est pas dans la liste des mots vides
                 foreach ($contenu as $key => $value) {
-                    if (strlen($value) < 3 || in_array($value, $ListeMot_vides)) {
+                    if (strlen($value) < 3 || in_array($value, $motvide)) {
                         unset($contenu[$key]);
                     }
 
@@ -106,32 +118,16 @@ require('connexion.php');
                 $result = $result->fetchAll();
                 // on affiche le resultat de la recherche trier par le nombre de redondance le plus grand
                 ?> 
-                
-                    <div class="tbl-header">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                    <thead>
-                        <tr>
-                        <th>Mot</th>
-                        <th>Nombre de redondance</th>
-                        <th>Nom du fichier</th>
-                        </tr>
-                    </thead>
-                    </table>
-                </div>
                 <div class="tbl-content">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                    <tbody>
+                    
+                    
                 
                 
                 
                 <?php
                 foreach($result as $key => $value){
-                    echo '<tr>';
-                    echo '<td>'.$value['mot'].'</td>';
-                    echo '<td>'.$value['redondance'].'</td>';
                     // on affiche le nom du fichier en cliquable et le nuage de mots
-                    echo '<td>'.'<a href="#">'.$value['nom_du_fichier'].'<div class="tooltipcontainer">'.'<div class="tooltip">'.motredondant($value['nom_du_fichier'],$pdo).'</div>'.'</div>'.'</a>'.'</td>';
-                    echo '</tr>';
+                    echo $value['mot'].' '.'['.$value['redondance'].']'.' '.'<a href="#">'.$value['nom_du_fichier'].'<div class="tooltipcontainer">'.'<div class="tooltip">'.motredondant($value['nom_du_fichier'],$pdo).'</div>'.'</div>'.'</a>'.'<br>';
                 }
 
                 // si le mot n'est pas dans la bdd on affiche un message d'erreur
@@ -140,8 +136,8 @@ require('connexion.php');
                 }
                 ?>
                 
-                </tbody>
-                </table>
+                
+                
                 </div>
                 
                 
