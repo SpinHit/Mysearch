@@ -133,11 +133,11 @@ section {
 
 /* for custom scrollbar for webkit browser*/
 /* Container is necessary because td cannot be positioned relative */
-.tooltipcontainer {
+.invisiblecontainer {
     position: relative;
 }
 
-.tooltip {
+.invisible {
     display: none;
     position: absolute;
     left: 200px;
@@ -148,6 +148,6 @@ section {
     /* More positioning, heigh, width, etc */
 }
 
-a:hover .tooltip {
+a:hover .invisible {
     display: block;
 }

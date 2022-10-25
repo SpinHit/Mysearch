@@ -8,12 +8,10 @@
 require('fonctions.php');
 $pdo = new PDO($dsn, $dbusername, $dbpassword);
 require('scan.php');
+require('scanUrl.php');
 
-//$pdo = new PDO($dsn, $dbusername, $dbpassword);
 
-// compter les redondances de chaque mot et les mettre dans un tableau avec le nombre de redondances et le mot sans doublons
 
-// on lance la fonction en cliquant sur le bouton bouttonscan et on affiche le resultat
 
 ?>
 
@@ -43,24 +41,6 @@ if (isset($_GET['recherche'])){
      $recherche = $_GET['recherche'];
      recherche($recherche,$pdo);
 }
-// on transforme le tableau en chaîne de caractère et on filtre les mots avec la fonction filtre
-// on regle l'encodage pour les accents en utf8
-
-
-/* $chaine = implode(" ",openhtml('https://www.lesnumeriques.com/'));
-//echo $chaine;
-  $chaine = filtre($chaine); 
-// on affiche la liste des mots
- foreach($chaine as $key => $value){
-     echo $value.'<br>';
-}   */
-
- 
-
-
-
-
-
 
 ?>
 
@@ -70,6 +50,9 @@ if (isset($_GET['recherche'])){
 <br>
 <div id='bouttonscan'>
 <a href='index.php?scan=true'>Scan</a>
+</div>
+<div id='bouttonscan'>
+<a href='index.php?scanUrls=true'>ScanUrls</a>
 </div>
 
 
