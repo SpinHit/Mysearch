@@ -34,7 +34,7 @@ div#bouttonscan a {
 }
 
 div#bouttonscan a:hover {
-    background-color: #2e2722;
+    background-color: #00b4cc;
     color: white;
 }
 
@@ -128,6 +128,7 @@ section {
 .affichageresultat {
     width: 70%;
     margin: auto;
+    text-align: left;
 }
 
 
@@ -140,7 +141,7 @@ section {
 .invisible {
     display: none;
     position: absolute;
-    left: 200px;
+    /* left: 200px; */
     background: #00b4cc;
     color: white;
     border-radius: 20px;

@@ -55,7 +55,7 @@ require('connexion.php');
                 
                     //$pdo->query($sql) ;
                 }
-                echo'<div id="listePagination">'.'Le fichier '. $pname." a etait ouvert et etait transférer dans la base de donnée avec succes".'</div>' ;
+                echo'<div id="listePagination">'.'Le fichier '. $pname." a etait ouvert et etait transférer dans la base de donnée avec succes".'</div>'. '<br>';
                 }
 
             // on retourne les mots les plus redondants d'un nom de fichier donné
@@ -113,72 +113,31 @@ require('connexion.php');
             }
 
 
-            // fonction ou on récupére ce qu'il y a dans une balise meta title et si il n'y a rien on retourne le nom du fichier
-            function getMetaTitle($url){
+
+            // on va récuperer le contenu de la page et le mettre dans un tableau avec comme info le titre, la description, les keywords, le contenu
+            function getMeta($url){
                 $html = file_get_contents($url);
                 $dom = new DOMDocument();
+                $keywords ='';
+                $description ='';
                 @$dom->loadHTML($html);
                 $metas = $dom->getElementsByTagName('title');
                 if ($metas->length > 0) {
                     $meta = $metas->item(0);
-                    return $meta->nodeValue;
+                    $title = $meta->nodeValue;
                 }
                 else{
-                    return $url;
+                    $title = $url;
                 }
-            }
-
-            // fonction ou on récupére ce qu'il y a dans une balise meta description et si il n'y a rien on retourne rien
-            function getMetaDescription($url){
-                // on ouvre le fichier
-                $html = file_get_contents($url);
-                // on crée un objet DOMDocument
-                $dom = new DOMDocument();
-                // on charge le contenu du fichier dans l'objet
-                @$dom->loadHTML($html);
-                // on récupére les balises meta description
                 $metas = $dom->getElementsByTagName('meta');
-                // on parcours les balises meta 
                 for ($i = 0; $i < $metas->length; $i++)
                 {
-                    // on récupére le nom de la balise
                     $meta = $metas->item($i);
-                    // si le nom de la balise est description on retourne le contenu de la balise
                     if($meta->getAttribute('name') == 'description')
-                        return $meta->getAttribute('content');
-                }
-                // si il n'y a pas de balise description on retourne rien
-                return '';
-            }
-
-            // fonction ou on récupére ce qu'il y a dans une balise meta keywords et si il n'y a rien on retourne rien
-            function getMetaKeywords($url){
-                // on ouvre le fichier
-                $html = file_get_contents($url);
-                // on crée un objet DOMDocument
-                $dom = new DOMDocument();
-                // on charge le contenu du fichier dans l'objet
-                @$dom->loadHTML($html);
-                // on récupére les balises meta keywords
-                $metas = $dom->getElementsByTagName('meta');
-                // on parcours les balises meta 
-                for ($i = 0; $i < $metas->length; $i++)
-                {
-                    // on récupére le nom de la balise
-                    $meta = $metas->item($i);
-                    // si le nom de la balise est keywords on retourne le contenu de la balise
+                        $description = $meta->getAttribute('content');
                     if($meta->getAttribute('name') == 'keywords')
-                        return $meta->getAttribute('content');
+                        $keywords = $meta->getAttribute('content');
                 }
-                // si il n'y a pas de balise keywords on retourne rien
-                return '';
-            }
-
-            //fonction pour récupérer le texte dans les balises p du body et le retourner
-            function getBody($url){
-                $html = file_get_contents($url);
-                $dom = new DOMDocument();
-                @$dom->loadHTML($html);
                 $body = $dom->getElementsByTagName('body');
                 $body = $body->item(0);
                 $p = $body->getElementsByTagName('p');
@@ -186,15 +145,24 @@ require('connexion.php');
                 foreach($p as $key => $value){
                     $chaine = $chaine.$value->nodeValue;
                 }
-                return $chaine;
+                $contenu = $chaine;
+
+                $tableau = array('title' => $title, 'description' => $description, 'keywords' => $keywords, 'contenu' => $contenu);
+                
+                return $tableau;
+
+               
             }
 
             // fonction permettant de chercher un mot dans la bdd et de l'afficher avec le nombre de redondance et le nom du fichier
             function recherche($mot,$pdo){
-                // on récupère le mot dans la bdd par rapport à la recherche par ordre de redondance le plus grand au plus petit
-                $sql = "SELECT * FROM tableurl WHERE mot LIKE '%$mot%' ORDER BY poid DESC";
-                $result = $pdo->query($sql);
-                $result = $result->fetchAll();
+                // on récupère le mot dans la bdd par rapport à la recherche par ordre de de poid sans utiliser LIKE
+                $sql = "SELECT * FROM tableurl WHERE mot = :mot ORDER BY poid DESC";
+                $req = $pdo->prepare($sql);
+                $req->execute(array(
+                    'mot' => $mot
+                ));
+                $result = $req->fetchAll();
                 // on affiche le resultat de la recherche trier par le nombre de redondance le plus grand
                 ?> 
                 <div class="tbl-content">

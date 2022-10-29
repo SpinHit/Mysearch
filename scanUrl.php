@@ -33,10 +33,8 @@ function workUrl($pdo,$url){
         'url' => $url
     ));
     $result = $req->fetch();
-    if($result == false){
-        $contenuClean = filtre(getBody($url));
-        
-        indexeetafficheUrl($pdo,$contenuClean,$url);
+    if($result == false){   
+        indexeetafficheUrl($pdo,$url);
 
 
     }
@@ -44,16 +42,29 @@ function workUrl($pdo,$url){
 
 
 // la fonction indexeetaffiche va prendre en parametre l'url et le contenu de l'url et va l'indexer dans la bdd mot par mot en indexant le titre avec la fonction getMetaTitle et en indexant la de de la description avec la fonction getMetaDescription et en indexant les keywords avec la fonction getMetaKeywords
-function indexeetafficheUrl($pdo,$contenuClean,$url){
-    $titre = getMetaTitle($url);
+function indexeetafficheUrl($pdo,$url){
+    $Listebalises = getMeta($url);
+    
+    // on met le contenu de 'contenu' dans la liste $Listebalises
+    $contenuClean = filtre($Listebalises['contenu']);
+    $contenu = $Listebalises['contenu'];
+    $titre = $Listebalises['title'];
     // descirption va valoir la description de la page et si il n'ya pas de decrpition alors on va mettre les 150 premiers mots de la page suivit de ...
-    $description = getMetaDescription($url);
-    if($description == ""){
-        // le contenu de la page est decoupé en mots et on prend les 150 premiers mots
-        $description = implode(" ",array_slice($contenuClean,0,25))."...";
+
+    // si la liste est null alors on l'initialise a vide
+    if($Listebalises['keywords'] == null){
+        $keywords = " ";
+    }else{
+        $keywords = $Listebalises['keywords'];
     }
 
-    $keywords = getMetaKeywords($url);
+    // si la liste est null alors on insert les 25 premiers mots du contenu de la page
+    if($Listebalises['description'] == null){
+        $description = implode(" ",array_slice($contenu,0,25))."...";
+    }else{
+        $description = $Listebalises['description'];
+    }
+    
     foreach($contenuClean as $mot){
         $poid = poidsMot($mot,$contenuClean,$titre,$description,$keywords);
             // on regarde si le mot et l'url sont deja dans la bdd

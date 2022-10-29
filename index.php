@@ -48,11 +48,13 @@ if (isset($_GET['recherche'])){
 
 
 <br>
+<div class='row' style='display: inline-flex; gap: 1vw;'>
 <div id='bouttonscan'>
 <a href='index.php?scan=true'>Scan</a>
 </div>
 <div id='bouttonscan'>
 <a href='index.php?scanUrls=true'>ScanUrls</a>
+</div>
 </div>
 
 
