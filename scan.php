@@ -15,7 +15,6 @@ $path= "documents";
 	?>
 	<center><?php
 }
- 
 
 function explorerDir($pdo,$path)
 
@@ -50,24 +49,28 @@ function explorerDir($pdo,$path)
 				// c'est le chemin entier de l'entrée + le nom de l'entrée
 				$path_source = $path."/".$entree;	
                     
-                $extensionValide = array("txt");
+                $extensionValide = array("html");
                 $tmp = explode(".", $entree);
                 $type = end($tmp);
                 // on regarde si l'entrée est une image  et on lance la fonction pour mettre l'image dans le dossier local et mettre les informations dans la bdd .
                 if (in_array($type,$extensionValide)){
-					//fonction permettant de transferer toutes les images du fichier docs a la base de donnée et les verssée dans le dossier image
-                    //echo " <p> <i class='far fa-image'></i> ".$path_source."</p><br>";
-                    $fp = fopen($path_source, 'r');
-                        // on lit le fichier
-                    $contenu = fread($fp, filesize($path_source));
-                        // on ferme le fichier
-                    fclose($fp);
-                        // on filtre les phrases du fichier
-                    $contenuClean = Filtre($contenu);
 
-                    indexeetaffiche($entree,$contenuClean,$pdo);
-                    
-                  //insereBddDossierCopy($pdo,$entree,filesize($path_source),"images/",$path_source);
+					
+					// si le fichier a déjà été indexé on ne le réindexe pas
+					$sql = "SELECT * FROM tableurl WHERE url = :url";
+					$req = $pdo->prepare($sql);
+					$req->execute(array(
+						'url' => $path_source
+					));
+					$result = $req->fetch();
+					if($result == false){
+						// on indexe le fichier
+						indexeUrlEtFichier($pdo,$path_source);
+					}
+					
+
+
+					
                 }
 
 			}

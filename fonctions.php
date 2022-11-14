@@ -148,11 +148,96 @@ require('connexion.php');
                 $contenu = $chaine;
 
                 $tableau = array('title' => $title, 'description' => $description, 'keywords' => $keywords, 'contenu' => $contenu);
-                
                 return $tableau;
-
-               
             }
+
+            function getMetaFile($path){
+                $fp = fopen($path, 'r');
+                //on récupére le contenu du body
+                $contenu = stream_get_contents($fp);
+                $dom = new DOMDocument();
+                $dom->loadHTML($contenu);
+                $metas = $dom->getElementsByTagName('title');
+                $meta = $metas->item(0);
+                $title = $meta->nodeValue;
+                $metas = $dom->getElementsByTagName('meta');
+                for ($i = 0; $i < $metas->length; $i++)
+                {
+                    $meta = $metas->item($i);
+                    if($meta->getAttribute('name') == 'description')
+                        $description = $meta->getAttribute('content');
+                    if($meta->getAttribute('name') == 'keywords')
+                        $keywords = $meta->getAttribute('content');
+                }
+                $body = $dom->getElementsByTagName('body');
+                $body = $body->item(0);
+                $p = $body->getElementsByTagName('p');
+                $chaine = '';
+                foreach($p as $key => $value){
+                    $chaine = $chaine.$value->nodeValue;
+                }
+                $contenu = $chaine;
+                $tableau = array('title' => $title, 'description' => $description, 'keywords' => $keywords, 'contenu' => $contenu);
+                fclose($fp);
+                return $tableau;
+            }
+
+            function indexeUrlEtFichier($pdo,$url){
+                // si c'est un string qui commence par http 
+                if(is_string($url) && substr($url,0,4) == 'http'){
+                    $Listebalises = getMeta($url);
+                }
+                else{
+                    $Listebalises = getMetaFile($url);
+                }
+                // on met le contenu de 'contenu' dans la liste $Listebalises
+                $contenuClean = filtre($Listebalises['contenu']);
+                $contenu = $Listebalises['contenu'];
+                $titre = $Listebalises['title'];
+                // descirption va valoir la description de la page et si il n'ya pas de decrpition alors on va mettre les 150 premiers mots de la page suivit de ...
+            
+                // si la liste est null alors on l'initialise a vide
+                if($Listebalises['keywords'] == null){
+                    $keywords = " ";
+                }else{
+                    $keywords = $Listebalises['keywords'];
+                }
+            
+                // si la liste est null alors on insert les 25 premiers mots du contenu de la page
+                if($Listebalises['description'] == null){
+                    $description = implode(" ",array_slice($contenu,0,25))."...";
+                }else{
+                    $description = $Listebalises['description'];
+                }
+                
+                foreach($contenuClean as $mot){
+                    $poid = poidsMot($mot,$contenuClean,$titre,$description,$keywords);
+                        // on regarde si le mot et l'url sont deja dans la bdd
+                        $sql = "SELECT * FROM tableurl WHERE url = :url AND mot = :mot";
+                        $req = $pdo->prepare($sql);
+                        $req->execute(array(
+                            'url' => $url,
+                            'mot' => $mot
+                        ));
+                        $result = $req->fetch();
+                        if($result == false){
+                            $sql = "INSERT INTO tableurl (url, title, description, keywords, mot, poid) VALUES (:url, :title, :description, :keywords, :mot, :poid)";
+                        $req = $pdo->prepare($sql);
+                        $req->execute(array(
+                            'url' => $url,
+                            'title' => $titre,
+                            'description' => $description,
+                            'keywords' => $keywords,
+                            'mot' => $mot,
+                            'poid' => $poid
+                        ));
+                        }
+                }
+                echo 'le lien ou le fichier '.$url.' a bien été indexé <br>';
+            }
+
+            // on va récuperer le contenu de la page et le mettre dans un tableau avec comme info le titre, la description, les keywords, le contenu d'une page HTML local donné en paramètre
+            
 
             // fonction permettant de chercher un mot dans la bdd et de l'afficher avec le nombre de redondance et le nom du fichier
             function recherche($mot,$pdo){
