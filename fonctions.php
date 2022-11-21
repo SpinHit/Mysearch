@@ -215,6 +215,9 @@ require('connexion.php');
                 }else{
                     $description = $Listebalises['description'];
                 }
+
+                // on compte le nombre de mots dans le contenu de la page
+                $nbMots = count($contenuClean);
                 
                 foreach($contenuClean as $mot){
                     $poid = poidsMot($mot,$contenuClean,$titre,$description,$keywords);
@@ -227,7 +230,7 @@ require('connexion.php');
                         ));
                         $result = $req->fetch();
                         if($result == false){
-                            $sql = "INSERT INTO tableurl (url, title, description, keywords, mot, poid) VALUES (:url, :title, :description, :keywords, :mot, :poid)";
+                            $sql = "INSERT INTO tableurl (url, title, description, keywords, mot, poid, nbrmotbody) VALUES (:url, :title, :description, :keywords, :mot, :poid, :nbrmotbody)";
                         $req = $pdo->prepare($sql);
                         $req->execute(array(
                             'url' => $url,
@@ -235,7 +238,8 @@ require('connexion.php');
                             'description' => $description,
                             'keywords' => $keywords,
                             'mot' => $mot,
-                            'poid' => $poid
+                            'poid' => $poid,
+                            'nbrmotbody' => $nbMots
                         ));
                         }
                 }
@@ -271,11 +275,58 @@ require('connexion.php');
                 <?php
             } 
 
+                        // fonction qui permet de supprimer toutes les lignes de la bdd ou l'url apparait
+            function supprimer($url,$pdo){
+                $sql = "DELETE FROM tableurl WHERE url = :url";
+                $req = $pdo->prepare($sql);
+                $req->execute(array(
+                    'url' => $url
+                ));
+            }
 
+            // fonction permettant de créer un tableau backoffice pour faire des statistiques sur le nombre de mots qu'il y a dans le body de l'url et le nombre de mots dans le title, description et keywords
+            function backoffice($pdo){
+                // on créer un tableau aver une colonne "url ou fichier" et une colonne "nombre de mots body" et une colonne "nombre de mots title" et une colonne "nombre de mots description" et une colonne "nombre de mots keywords"
+                echo '<table id="tableau"> <tbody>';
+                echo '<tr>';
+                echo '<th>url ou fichier</th>';
+                echo '<th>nombre de mots body</th>';
+                echo '<th>nombre de mots title</th>';
+                echo '<th>nombre de mots description</th>';
+                echo '<th>nombre de mots keywords</th>';
+                /* echo '<th>supprimer la ligne</th>'; */
+                echo '</tr>';
+                // on récupère les url et le nombre de mots dans le body et le nombre de mots dans le title, description et keywords sans faire de doublons
+                $sql = "SELECT DISTINCT url, nbrmotbody, title, description, keywords FROM tableurl";
+                $req = $pdo->prepare($sql);
+                $req->execute();
+                $result = $req->fetchAll();
+                // on affiche le resultat de la recherche trier par le nombre de redondance le plus grand
+                foreach($result as $key => $value){
+                    // on affiche le nom du fichier en cliquable et le nuage de mots
+                    // si l'url est trop longue on la coupe
+                    if(strlen($value['url']) > 50){
+                        $url = substr($value['url'],0,50).'...';
+                    }else{
+                        $url = $value['url'];
+                    }
+
+                    echo '<tr>';
+                    echo '<td>';
+                    echo '<a href="'.$value['url'].'">'.$url.'<div class="invisiblecontainer">'.'<div class="invisible">'.nuageMots($value['url'],$pdo).'</div>'.'</div>'.'</a>';
+                    echo '</td>';
+                    echo '<td>'.$value['nbrmotbody'].'</td>';
+                    echo '<td>'.count(explode(" ",$value['title'])).'</td>';
+                    echo '<td>'.count(explode(" ",$value['description'])).'</td>';
+                    echo '<td>'.count(explode(" ",$value['keywords'])).'</td>';
+                    // on ajoute un bouton pour supprimer la ligne de la bdd
 
 
             
-                
-    
 
-?>
+
+                    echo '</tr>';
+                }
+                echo '</tbody></table>';
+            }
+

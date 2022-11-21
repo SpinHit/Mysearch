@@ -23,9 +23,22 @@ require('scanUrl.php');
 <button class="btn btn-primary" onclick="window.location.href='index.php'">Déconnexion</button>
 
 
+<!-- on va créer une fenetre back office pour pouvoir modifier les données -->
+<?php
+backoffice($pdo);
+?>
 
+<div class='row' style='display: inline-flex; gap: 1vw;'>
+<div id='bouttonscan'>
+<a href='admin.php?scan=true'>Scan</a>
+</div>
+<div id='bouttonscan'>
+<a href='admin.php?scanUrls=true'>ScanUrls</a>
+</div>
+</div> 
+<br>
 
-<h1>Moteur de recherche</h1>
+<div class="container">
  
      <!--  Barre de recherche -->
      <form class='wrap' method="get" action="admin.php">
@@ -55,14 +68,7 @@ if (isset($_GET['recherche'])){
 
 
 <br>
-<div class='row' style='display: inline-flex; gap: 1vw;'>
-<div id='bouttonscan'>
-<a href='admin.php?scan=true'>Scan</a>
-</div>
-<div id='bouttonscan'>
-<a href='admin.php?scanUrls=true'>ScanUrls</a>
-</div>
-</div> 
+
 
 
 <center/>

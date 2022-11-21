@@ -184,3 +184,30 @@ a:hover .invisible {
 	/* background color #00B4CC plus foncé  */
 	background-color: #0099b3;
 }
+
+/* on met du style a notre tableau et si une colonne est trop longue on met ... */
+#tableau {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#tableau td, #tableau th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+
+#tableau tr:nth-child(even){background-color: #f2f2f2;}
+
+#tableau tr:hover {background-color: #ddd;}
+
+#tableau th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #00B4CC;
+    color: white;
+}
