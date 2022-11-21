@@ -34,7 +34,7 @@ div#bouttonscan a {
 }
 
 div#bouttonscan a:hover {
-    background-color: #00b4cc;
+    background-color: #0099b3;
     color: white;
 }
 
@@ -86,7 +86,7 @@ footer {
 }
 
 .searchButton:hover {
-    background: #0b7dda;
+    background: #0099b3;
 
 }
 
@@ -151,4 +151,36 @@ section {
 
 a:hover .invisible {
     display: block;
+}
+
+#div_login {
+	background-color: #f2f2f2;
+	width: 300px;
+	border: 1px solid gray;
+	border-radius: 2px;
+	padding: 30px;
+	/* on met la partie login a gauche de l'ecran */
+	margin-right: 80%;
+
+}
+
+.textbox {
+	width: 100%;
+	padding: 10px;
+}
+
+#envoyer {
+	padding: 10px 20px;
+	background-color: #00B4CC;
+	color: #FFF;
+	border: 0px;
+	border-radius: 2px;
+	/* on fait en sorte que la souris soit cliquable */
+	cursor: pointer;
+}
+
+/* quand la souris est sur le bouton on change la couleur en plus foncé */
+#envoyer:hover {
+	/* background color #00B4CC plus foncé  */
+	background-color: #0099b3;
 }

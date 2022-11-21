@@ -19,13 +19,16 @@ require('scanUrl.php');
 
 <center>
 
-<!-- on insert login.php -->
-<?php include('login.php'); ?>
+<!-- on créer un un bouton cliquable pour se déconnecter et revenir vers la apge index.php -->
+<button class="btn btn-primary" onclick="window.location.href='index.php'">Déconnexion</button>
+
+
+
 
 <h1>Moteur de recherche</h1>
  
      <!--  Barre de recherche -->
-     <form class='wrap' method="get" action="index.php">
+     <form class='wrap' method="get" action="admin.php">
           <div class="search">
      <input type="text" class="searchTerm" name="recherche" placeholder="Que cherchez vous ?">
      <input class="searchButton" type="submit" name="submit" value="Rechercher">
@@ -52,14 +55,14 @@ if (isset($_GET['recherche'])){
 
 
 <br>
-<!-- <div class='row' style='display: inline-flex; gap: 1vw;'>
+<div class='row' style='display: inline-flex; gap: 1vw;'>
 <div id='bouttonscan'>
-<a href='index.php?scan=true'>Scan</a>
+<a href='admin.php?scan=true'>Scan</a>
 </div>
 <div id='bouttonscan'>
-<a href='index.php?scanUrls=true'>ScanUrls</a>
+<a href='admin.php?scanUrls=true'>ScanUrls</a>
 </div>
-</div> -->
+</div> 
 
 
 <center/>

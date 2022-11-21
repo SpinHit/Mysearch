@@ -62,7 +62,7 @@ require('connexion.php');
             function nuageMots($url,$pdo){
                 $redondance1=0;
                 $chaine='';
-                $pixelvaleur=15;
+                $pixelvaleur=20;
                 // on récupère le mot dans la bdd par rapport à la recherche par ordre de redondance le plus grand au plus petit
                 $sql = "SELECT * FROM tableurl WHERE url = '$url' ORDER BY poid DESC";
                 $result = $pdo->query($sql);
@@ -153,13 +153,19 @@ require('connexion.php');
 
             function getMetaFile($path){
                 $fp = fopen($path, 'r');
-                //on récupére le contenu du body
+                //stream_get_contents sert à lire le contenu d'un fichier
                 $contenu = stream_get_contents($fp);
+                // new DOMDocument permet de créer un objet DOMDocument qui va nous permettre de récupérer le contenu d'un fichier html
                 $dom = new DOMDocument();
+                // dom load html permet de charger le contenu d'un fichier html dans un objet DOMDocument
                 $dom->loadHTML($contenu);
+                // getElementsByTagName permet de récupérer les balises d'un fichier html
                 $metas = $dom->getElementsByTagName('title');
+                // metas->item(0) permet de récupérer le premier élément de la balise title
                 $meta = $metas->item(0);
+                //nodeValue permet de récupérer le contenu d'une balise
                 $title = $meta->nodeValue;
+                // on récupère la description et les keywords
                 $metas = $dom->getElementsByTagName('meta');
                 for ($i = 0; $i < $metas->length; $i++)
                 {
