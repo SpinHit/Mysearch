@@ -142,7 +142,10 @@ section {
     display: none;
     position: absolute;
     /* left: 200px; */
-    background: #00b4cc;
+    background: white;
+    /* on créer une ombre légère */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;  
     color: white;
     border-radius: 20px;
     z-index: 1;
@@ -159,9 +162,6 @@ a:hover .invisible {
 	border: 1px solid gray;
 	border-radius: 2px;
 	padding: 30px;
-	/* on met la partie login a gauche de l'ecran */
-	margin-right: 80%;
-
 }
 
 .textbox {
@@ -210,4 +210,22 @@ a:hover .invisible {
     text-align: left;
     background-color: #00B4CC;
     color: white;
+}
+
+#bouttonlogin {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#resultatbar{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 5%;
+    /* on met une ligne grise en bas */
+    border-bottom: 1px solid #ddd;
+}
+
+#textegrise{
+    color: #919191;
 }

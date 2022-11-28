@@ -262,10 +262,30 @@ require('connexion.php');
                 ?> 
                 <div class="tbl-content">
                 <?php
+                // si il y a des resultats on affiche le nombre de resultats
+                if($result != null){
+                    ?>
+                    <div id="resultatbar">
+                        <div id='texteresultat'>
+                        <?php
+                    echo 'il y a  <b>'.'['.count($result).']'.'</b>'.' résultats pour le mot <b>'.'"'.$mot.'"'.'</b>:';        
+                    ?>
+                    </div>
+
+                    <div id ="textegrise">
+                        <?php
+                        echo '*Faites survolé la souris sur un lien pour voir le nuage de mots';
+                        ?>
+                    </div>
+                    </div>
+                    <?php
+                }
+
                 foreach($result as $key => $value){
                     // on affiche le nom du fichier en cliquable et le nuage de mots
-                    echo $value['mot'].' '.'['.$value['poid'].']'.' '.'<a href="'.$value['url'].'">'.$value['title'].'<div class="invisiblecontainer">'.'<div class="invisible">'.nuageMots($value['url'],$pdo).'</div>'.'</div>'.'</a>'.'<br>'.'<p>'.$value['description'].'</p>'.'<br>';
+                    echo  '<a href="'.$value['url'].'">'.$value['title'].'<div class="invisiblecontainer">'.'<div class="invisible">'.nuageMots($value['url'],$pdo).'</div>'.'</div>'.'</a>'.'<br>'.'<p>'.$value['description'].'</p>'.'<br>';
                 }
+
                 // si le mot n'est pas dans la bdd on affiche un message d'erreur
                 if(empty($result)){
                     echo "Nous n'avons pas trouvé le mot recherché";
@@ -274,15 +294,6 @@ require('connexion.php');
                 </div>
                 <?php
             } 
-
-                        // fonction qui permet de supprimer toutes les lignes de la bdd ou l'url apparait
-            function supprimer($url,$pdo){
-                $sql = "DELETE FROM tableurl WHERE url = :url";
-                $req = $pdo->prepare($sql);
-                $req->execute(array(
-                    'url' => $url
-                ));
-            }
 
             // fonction permettant de créer un tableau backoffice pour faire des statistiques sur le nombre de mots qu'il y a dans le body de l'url et le nombre de mots dans le title, description et keywords
             function backoffice($pdo){
@@ -319,14 +330,7 @@ require('connexion.php');
                     echo '<td>'.count(explode(" ",$value['title'])).'</td>';
                     echo '<td>'.count(explode(" ",$value['description'])).'</td>';
                     echo '<td>'.count(explode(" ",$value['keywords'])).'</td>';
-                    // on ajoute un bouton pour supprimer la ligne de la bdd
-
-
-            
-
-
                     echo '</tr>';
                 }
                 echo '</tbody></table>';
             }
-

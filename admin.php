@@ -20,7 +20,9 @@ require('scanUrl.php');
 <center>
 
 <!-- on créer un un bouton cliquable pour se déconnecter et revenir vers la apge index.php -->
-<button class="btn btn-primary" onclick="window.location.href='index.php'">Déconnexion</button>
+<div id="bouttonlogin">
+<button class="btn btn-primary" onclick="window.location.href='index.php'"><img src="https://img.icons8.com/ios/50/000000/logout-rounded-left.png"/></button>
+</div>
 
 
 <!-- on va créer une fenetre back office pour pouvoir modifier les données -->
@@ -38,31 +40,7 @@ backoffice($pdo);
 </div> 
 <br>
 
-<div class="container">
- 
-     <!--  Barre de recherche -->
-     <form class='wrap' method="get" action="admin.php">
-          <div class="search">
-     <input type="text" class="searchTerm" name="recherche" placeholder="Que cherchez vous ?">
-     <input class="searchButton" type="submit" name="submit" value="Rechercher">
-     </div>
-     </form>
-     <br>
-     
 
-    
-    
-<div class='affichageresultat'> 
-<?php
-
-//on recupere la valeur de la recherche
-if (isset($_GET['recherche'])){
-     // on la fonction de recherche
-     $recherche = $_GET['recherche'];
-     recherche($recherche,$pdo);
-}
-
-?>
 
 </div>
 

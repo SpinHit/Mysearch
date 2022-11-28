@@ -1,4 +1,20 @@
-<!-- le formulaire est caché par defaut et quand on clique sur l'image de login il s'affiche -->
+<!-- Page de connexion qui va rediriger vers la page admin.php -->
+
+<?php
+// on demarre la session
+session_start();
+//require('connexion.php');
+
+require('fonctions.php');
+$pdo = new PDO($dsn, $dbusername, $dbpassword);
+require('scan.php');
+require('scanUrl.php');
+?>
+
+<!-- Partie HTML-->
+
+<center>
+
 <form method="post" action="">
         <div id="div_login">
             <h1>Connexion</h1>
@@ -14,12 +30,7 @@
         </div>
     </form>
 
-<!-- on créer un un bouton pour afficher le formulaire de connexion et quand on
-
-
-
-
-
+</center>
 
 <?php
 
@@ -61,7 +72,7 @@ if(isset($_POST["user"]) && isset($_POST["pass"]))
 		{ 
 			// si il n'y apas le bon mdp on reviens a la case depart
 			session_write_close();
-			header("location: index.php");
+			header("location: loginPage.php");
 			exit();
 		}
 		
@@ -73,61 +84,12 @@ if(isset($_POST["user"]) && isset($_POST["pass"]))
 }
 
 
-?>
+?> 
 
 <style>
-
-#login {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 300px;
-	height: 300px;
-	background: #fff;
-	border-radius: 5px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-	display: none;
-}
-
-#login h1 {
-	text-align: center;
-	color: #333;
-	font-size: 30px;
-	padding: 0;
-	margin: 0;
-	line-height: 60px;
-}
-
-#login form {
-	padding: 20px 30px;
-}
-
-#login .textbox {
-	width: 100%;
-	overflow: hidden;
-	font-size: 20px;
-	padding: 8px 0;
-	margin: 8px 0;
-	border-bottom: 1px solid #4caf50;
-}
-
-#login input[type="submit"] {
-	width: 100%;
-	background: none;
-	border: 2px solid #4caf50;
-	color: #4caf50;
-	padding: 5px;
-	font-size: 18px;
-	cursor: pointer;
-	margin: 12px 0;
-}
-
-#login input[type="submit"]:hover {
-	background: #4caf50;
-	color: #fff;
-}
-
-
-
+<?php include 'style.css'; ?>
 </style>
+
+
+
+

@@ -9,20 +9,18 @@ require('fonctions.php');
 $pdo = new PDO($dsn, $dbusername, $dbpassword);
 require('scan.php');
 require('scanUrl.php');
-
-
-
-
 ?>
 
 <!-- Partie HTML-->
 
 <center>
+     <!-- bouton qui redirige vers la page loginPage.php -->
+     <div id="bouttonlogin">
+     <button class="btn btn-primary" onclick="window.location.href='loginPage.php'"><img src="https://img.icons8.com/ios/50/000000/login-rounded-right.png"/></button>
+     </div>
 
-<!-- on insert login.php -->
-<?php include('login.php'); ?>
-
-<h1>Moteur de recherche</h1>
+<!-- Logo du moteur "logo.png" -->
+<h1><img src="logo.png" alt="logo" width="200" height="auto"></h1>
  
      <!--  Barre de recherche -->
      <form class='wrap' method="get" action="index.php">
@@ -37,6 +35,7 @@ require('scanUrl.php');
     
     
 <div class='affichageresultat'> 
+
 <?php
 
 //on recupere la valeur de la recherche
